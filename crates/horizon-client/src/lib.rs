@@ -8,6 +8,8 @@ mod web;
 mod web_renderer;
 #[cfg(target_arch = "wasm32")]
 mod game;
+#[cfg(target_arch = "wasm32")]
+extern crate self as horizon_client;
 pub mod advancements;
 pub mod ambience;
 pub mod animate_tick;
