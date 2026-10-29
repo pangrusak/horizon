@@ -118,3 +118,4 @@ getrandom = { version = "0.2", features = ["js"] }
 getrandom03 = { package = "getrandom", version = "0.3", features = ["wasm_js"] }
 ring = { version = "0.17.14", features = ["wasm32_unknown_unknown_js"] }
 rustls-pki-types = { version = "1", features = ["web"] }
+wgpu = { version = "30.0.1", default-features = false, features = ["web", "webgpu"] }
