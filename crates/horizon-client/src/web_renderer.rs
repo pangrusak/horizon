@@ -63,6 +63,7 @@ impl ApplicationHandler for BrowserApp {
 
         self.window = Some(window.clone());
         let renderer_slot = self.renderer.clone();
+        let redraw_window = window.clone();
 
         status("Winit canvas attached. Initializing Horizon renderer…");
 
@@ -99,13 +100,18 @@ impl ApplicationHandler for BrowserApp {
             match result {
                 Ok(renderer) => {
                     *renderer_slot.borrow_mut() = Some(renderer);
+
                     status(
-                        "Horizon Renderer initialized with placeholder textures.\n\
-                         Renderer retained; no game frame drawn yet.",
+                        "Horizon Renderer initialized.\n\
+                         Requesting the first renderer frame…",
                     );
+
+                    redraw_window.request_redraw();
                 }
                 Err(error) => {
-                    status(&format!("Horizon renderer initialization failed: {error}"));
+                    status(&format!(
+                        "Horizon renderer initialization failed: {error}"
+                    ));
                 }
             }
         });
@@ -114,11 +120,57 @@ impl ApplicationHandler for BrowserApp {
     fn window_event(
         &mut self,
         event_loop: &ActiveEventLoop,
-        _window_id: WindowId,
+        window_id: WindowId,
         event: WindowEvent,
     ) {
-        if matches!(event, WindowEvent::CloseRequested) {
-            event_loop.exit();
+        let Some(window) = self.window.as_ref() else {
+            return;
+        };
+
+        if window.id() != window_id {
+            return;
+        }
+
+        match event {
+            WindowEvent::CloseRequested => {
+                event_loop.exit();
+            }
+
+            WindowEvent::RedrawRequested => {
+                let mut slot = self.renderer.borrow_mut();
+
+                let Some(renderer) = slot.as_mut() else {
+                    return;
+                };
+
+                let size = window.inner_size();
+                let hud = crate::hud::HudBatch::new([
+                    size.width.max(1),
+                    size.height.max(1),
+                ]);
+
+                let frame = browser_frame(&hud);
+
+                match renderer.render(&frame) {
+                    Ok(true) => {
+                        status(
+                            "Horizon Renderer rendered and presented a title frame.\n\
+                            Placeholder panorama; no assets or gameplay loaded.",
+                        );
+                    }
+
+                    Ok(false) => {
+                        status("Frame skipped; requesting another redraw.");
+                        window.request_redraw();
+                    }
+
+                    Err(error) => {
+                        status(&format!("Horizon frame rendering failed: {error}"));
+                    }
+                }
+            }
+
+            _ => {}
         }
     }
 }
@@ -130,4 +182,66 @@ pub fn start_renderer() -> Result<(), JsValue> {
 
     event_loop.spawn_app(BrowserApp::default());
     Ok(())
+}
+fn browser_frame(hud: &crate::hud::HudBatch) -> crate::gfx::Frame<'_> {
+    crate::gfx::Frame {
+        weather: &[],
+        weather_time: crate::weather::Time::new(0, 0.0),
+        camera: glam::DVec3::new(0.5, 100.0, 0.5),
+        yaw: 0.0,
+        pitch: 10.0,
+        fov_degrees: 85.0,
+        bob: glam::Mat4::IDENTITY,
+        spin: glam::Mat4::IDENTITY,
+        sky: crate::environment::Sky::default(),
+        distance: 12.0,
+        detail_distance: 12.0,
+        depth_far: 1000.0,
+        underwater: false,
+        cave_culling: false,
+        title: true,
+        sky_blocked: false,
+        skybox: false,
+        end_sky: false,
+        end_sky_sprite: None,
+        environment_fog: None,
+        water_fog: [0.0; 3],
+        fog: None,
+        dark_disc: false,
+        outline: Vec::new(),
+        outline_after_terrain: false,
+        outline_high_contrast: false,
+        debug_lines: &[],
+        debug_lines_on_top: &[],
+        debug_crosshair: &[],
+        hud,
+        glint_alpha: 0.75,
+        glint_ticks: 0.0,
+        nether_lighting: false,
+        entities: &[],
+        entity_spans: &[],
+        glowing: &[],
+        dynamic_lights: &[],
+        clouds: None,
+        lightning: Default::default(),
+        additive: &[],
+        see_through: &[],
+        celestial: &[],
+        stars: None,
+        hand: &[],
+        hand_fov_degrees: 70.0,
+        screen: &[],
+        pack: Default::default(),
+        border: None,
+        game_time: 0.0,
+        shader_game_time: 0.0,
+        end_portal_sprites: [[0.0; 4]; 2],
+        crumbling_sprite: [0.0; 4],
+        ticks: 0,
+        darkness: (0.0, 0.0),
+        night_vision: 0.0,
+        block_flicker: 0.0,
+        boss_darken: 0.0,
+        menu_blur: None,
+    }
 }
