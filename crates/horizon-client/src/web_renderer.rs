@@ -70,11 +70,17 @@ impl ApplicationHandler for BrowserApp {
         wasm_bindgen_futures::spawn_local(async move {
             let white = [255u8, 255, 255, 255];
             let transparent = [0u8; 4];
-            let black = [0u8, 0, 0, 255];
-
             let panorama = panorama::Faces {
+
                 size: 1,
-                pixels: black.repeat(6),
+                pixels: vec![
+                    240, 70, 70, 255,    // Face 0: red
+                    70, 200, 100, 255,   // Face 1: green
+                    70, 120, 240, 255,   // Face 2: blue
+                    240, 200, 70, 255,   // Face 3: yellow
+                    200, 70, 220, 255,   // Face 4: purple
+                    70, 210, 220, 255,   // Face 5: cyan
+                ],
             };
 
             let result = Renderer::new(
@@ -154,11 +160,10 @@ impl ApplicationHandler for BrowserApp {
                 match renderer.render(&frame) {
                     Ok(true) => {
                         status(
-                            "Horizon Renderer rendered and presented a title frame.\n\
-                            Placeholder panorama; no assets or gameplay loaded.",
+                            "Horizon Renderer presented the colored panorama test.\n\
+                            Placeholder textures; no real assets or gameplay loaded.",
                         );
                     }
-
                     Ok(false) => {
                         status("Frame skipped; requesting another redraw.");
                         window.request_redraw();
