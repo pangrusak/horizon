@@ -11,7 +11,7 @@ description = "Horizon native development client"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-web-time = "1.1"
+web-time = "1"
 horizon-assets = { path = "../horizon-assets" }
 horizon-client-core = { path = "../horizon-client-core" }
 horizon-client-input = { path = "../horizon-client-input" }

@@ -4,7 +4,7 @@ use super::{Game, loading_frame};
 use horizon_client::{Result, hud::HudBatch};
 use std::{
     collections::{HashSet, VecDeque},
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 pub(super) struct ClosingSave {
@@ -248,3 +248,5 @@ impl Game<'_> {
         Ok(())
     }
 }
+
+use web_time::Instant;

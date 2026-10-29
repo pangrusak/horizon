@@ -5,7 +5,7 @@ use horizon_core::geometry::Vec3;
 use serde_json::{Value, json};
 use std::{
     sync::mpsc::Sender,
-    time::{Duration, Instant},
+    time::Duration,
 };
 use winit::{event::MouseButton, event_loop::ActiveEventLoop, keyboard::KeyCode};
 
@@ -1193,3 +1193,5 @@ fn key_code(name: &str) -> Option<KeyCode> {
         _ => return None,
     })
 }
+
+use web_time::Instant;

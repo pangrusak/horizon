@@ -3,6 +3,7 @@
 //! remote server, the bandwidth. Each chart keeps the last 240 samples
 //! (`LocalSampleLogger`) and draws one bar per sample over a 60 pixel high
 //! box (`AbstractDebugChart`).
+use web_time::Instant;
 use crate::{
     font::Font,
     hud_layout::{GuiDraw, argb, fill},
@@ -10,7 +11,7 @@ use crate::{
 };
 use std::{
     collections::VecDeque,
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 /// `LocalSampleLogger.CAPACITY`.
