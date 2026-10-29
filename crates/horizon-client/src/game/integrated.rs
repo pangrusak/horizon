@@ -10,6 +10,7 @@
 //! `HORIZON_SERVER_THREAD=0`) runs the world in the frame instead, the
 //! escape hatch. LAN guests and dedicated servers use the same code either
 //! way.
+use web_time::Instant;
 use super::{
     Game, Options, PackResources, Resources, UiResources,
     execution_role::ExecutionRole,
@@ -34,7 +35,7 @@ use std::{
         mpsc::{Receiver, Sender, channel, sync_channel},
     },
     thread::JoinHandle,
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 /// What the window tells its server thread.
