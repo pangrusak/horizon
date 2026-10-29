@@ -46,9 +46,15 @@
     const horizon = await import("./pkg/horizon_client.js");
     await horizon.default();
 
-    horizon.start_renderer();
+    status.textContent = "Calling Horizon game::run()...";
+    console.log("Horizon: entering game::run()");
+
+    horizon.run_full_game();
+
+    status.textContent += "\ngame::run() returned Ok(()).";
+    console.log("Horizon: game::run() returned Ok(())");
   } catch (error) {
-    console.error(error);
+    console.error("Horizon full startup failed:", error);
     status.textContent += `\nStartup failed: ${String(error)}`;
   }
 </script>

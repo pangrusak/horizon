@@ -10,6 +10,15 @@ mod web_renderer;
 mod game;
 #[cfg(target_arch = "wasm32")]
 extern crate self as horizon_client;
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn run_full_game() -> std::result::Result<(), wasm_bindgen::JsValue> {
+    game::run().map_err(|error| {
+        wasm_bindgen::JsValue::from_str(&format!(
+            "Horizon full startup failed:\n{error:#}"
+        ))
+    })
+}
 pub mod advancements;
 pub mod ambience;
 pub mod animate_tick;
