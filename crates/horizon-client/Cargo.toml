@@ -131,3 +131,4 @@ web-sys = { version = "0.3", features = [
     "Node",
     "HtmlCanvasElement",
 ] }
+wasm-bindgen-futures = "0.4"

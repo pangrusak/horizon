@@ -27,3 +27,9 @@ pub fn start() -> Result<(), JsValue> {
 
     Ok(())
 }
+#[wasm_bindgen]
+pub async fn probe_gpu() -> Result<String, JsValue> {
+    crate::gfx::browser_device_probe()
+        .await
+        .map_err(|error| JsValue::from_str(&error.to_string()))
+}

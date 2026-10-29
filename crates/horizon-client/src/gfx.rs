@@ -5886,3 +5886,58 @@ mod sprite_upload_tests {
         }
     }
 }
+
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+pub async fn browser_device_probe() -> Result<String> {
+    let instance = wgpu::Instance::new(instance_descriptor(
+        wgpu::Backends::BROWSER_WEBGPU,
+    ));
+
+    let adapter = instance
+        .request_adapter(&wgpu::RequestAdapterOptions {
+            power_preference: wgpu::PowerPreference::HighPerformance,
+            compatible_surface: None,
+            force_fallback_adapter: false,
+            ..Default::default()
+        })
+        .await?;
+
+    let limits = adapter.limits();
+
+    let features = timing::GpuTimer::features(&adapter)
+        | cull::Cull::features(&adapter)
+        | (adapter.features()
+            & (wgpu::Features::INDIRECT_FIRST_INSTANCE
+                | wgpu::Features::MAPPABLE_PRIMARY_BUFFERS
+                | wgpu::Features::TEXTURE_FORMAT_16BIT_NORM
+                | wgpu::Features::TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES
+                | wgpu::Features::RG11B10UFLOAT_RENDERABLE));
+
+    let desc = wgpu::DeviceDescriptor {
+        label: Some("Horizon browser device probe"),
+        required_features: features,
+        required_limits: limits,
+        ..Default::default()
+    };
+
+    let (device, _queue) = adapter.request_device(&desc).await?;
+    let actual = device.limits();
+
+    let report = format!(
+        "Rust/Wgpu device created successfully.\n\
+         Backend: {:?}\n\
+         Enabled features: {:?}\n\
+         Texture array layers: {}\n\
+         Bind groups: {}\n\
+         Storage buffers per shader stage: {}\n\
+         Horizon renderer not started.",
+        adapter.get_info().backend,
+        device.features(),
+        actual.max_texture_array_layers,
+        actual.max_bind_groups,
+        actual.max_storage_buffers_per_shader_stage,
+    );
+
+    device.destroy();
+    Ok(report)
+}
