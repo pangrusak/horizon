@@ -29,16 +29,34 @@ struct Out {
     return out;
 }
 @fragment fn fs_main(in: Out) -> @location(0) vec4<f32> {
-    // u >= 2: the GLINT_TEXTURING sample over the item, masked by the item's
-    // texture alpha (item.fsh's ALPHA_CUTOUT and GLINT path).
+    // Perform all implicit-derivative texture sampling before branching.
+    let mask = textureSample(
+        atlas,
+        atlas_sampler,
+        in.uv - vec2(2.0, 0.0)
+    ).a;
+
+    let glint = hud.size.w * textureSample(
+        glint_tex,
+        glint_sampler,
+        in.glint_uv
+    );
+
+    let c = textureSample(atlas, atlas_sampler, in.uv) * in.color;
+
+    // u >= 2: glint over the item, masked by the item's texture alpha.
     if in.uv.x >= 2.0 {
-        let mask = textureSample(atlas, atlas_sampler, in.uv - vec2(2.0, 0.0)).a;
-        if mask < 0.1 { discard; }
-        let glint = hud.size.w * textureSample(glint_tex, glint_sampler, in.glint_uv);
+        if mask < 0.1 {
+            discard;
+        }
+
         return vec4(glint.rgb * glint.rgb, mask);
     }
-    let c = textureSample(atlas, atlas_sampler, in.uv) * in.color;
-    if c.a < 0.004 { discard; }
+
+    if c.a < 0.004 {
+        discard;
+    }
+
     return c;
 }
 @fragment fn fs_crosshair(in: Out) -> @location(0) vec4<f32> {
