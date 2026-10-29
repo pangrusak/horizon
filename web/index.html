@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Horizon browser startup test</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #eee;
+      font: 16px system-ui, sans-serif;
+    }
+
+    #status {
+      padding: 16px;
+      white-space: pre-wrap;
+    }
+
+    canvas {
+      display: block;
+      width: min(100%, 1280px);
+      height: auto;
+      margin: 0 auto;
+      background: #202838;
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Loading Horizon WASM…</div>
+  <canvas id="horizon-canvas"></canvas>
+
+  <script type="module">
+    const status = document.getElementById("status");
+
+    try {
+      const { default: init } = await import("./pkg/horizon_client.js");
+      await init();
+    } catch (error) {
+      console.error(error);
+      status.textContent = `Horizon startup failed:\n${error}`;
+    }
+  </script>
+</body>
+</html>

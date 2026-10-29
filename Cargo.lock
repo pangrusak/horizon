@@ -1423,6 +1423,8 @@ dependencies = [
  "symphonia",
  "unicode-bidi",
  "ureq",
+ "wasm-bindgen",
+ "web-sys",
  "wgpu",
  "winit",
  "winresource",

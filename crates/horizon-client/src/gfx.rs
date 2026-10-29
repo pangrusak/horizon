@@ -786,16 +786,28 @@ fn instance_descriptor(backends: wgpu::Backends) -> wgpu::InstanceDescriptor {
 /// the renderer's start (#746). macOS has Metal only.
 fn backend_order(api: GraphicsApi, os: &str, wgpu_backend: bool) -> Vec<wgpu::Backends> {
     use wgpu::Backends;
-    if os == "macos" || wgpu_backend {
-        return vec![Backends::default()];
+
+    #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+    {
+        let _ = (api, os, wgpu_backend);
+        vec![Backends::BROWSER_WEBGPU]
     }
-    let windows = os == "windows";
-    match api {
-        GraphicsApi::Auto if windows => vec![Backends::VULKAN, Backends::DX12, Backends::GL],
-        GraphicsApi::Auto => vec![Backends::VULKAN, Backends::GL],
-        GraphicsApi::Dx12 if windows => vec![Backends::DX12],
-        GraphicsApi::Vulkan | GraphicsApi::Dx12 => vec![Backends::VULKAN],
-        GraphicsApi::OpenGl => vec![Backends::GL],
+
+    #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+    {
+        if os == "macos" || wgpu_backend {
+            return vec![Backends::default()];
+        }
+        let windows = os == "windows";
+        match api {
+            GraphicsApi::Auto if windows => {
+                vec![Backends::VULKAN, Backends::DX12, Backends::GL]
+            }
+            GraphicsApi::Auto => vec![Backends::VULKAN, Backends::GL],
+            GraphicsApi::Dx12 if windows => vec![Backends::DX12],
+            GraphicsApi::Vulkan | GraphicsApi::Dx12 => vec![Backends::VULKAN],
+            GraphicsApi::OpenGl => vec![Backends::GL],
+        }
     }
 }
 fn backends_name(backends: wgpu::Backends) -> &'static str {
@@ -803,6 +815,7 @@ fn backends_name(backends: wgpu::Backends) -> &'static str {
         wgpu::Backends::VULKAN => "Vulkan",
         wgpu::Backends::DX12 => "DirectX 12",
         wgpu::Backends::GL => "OpenGL",
+        wgpu::Backends::BROWSER_WEBGPU => "WebGPU",
         _ => "graphics",
     }
 }

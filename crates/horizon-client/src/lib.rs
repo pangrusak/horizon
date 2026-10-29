@@ -1,6 +1,8 @@
 //! Horizon native client: resources, world streaming, rendering and the
 //! bindings between the validated simulation pieces and the game loop.
 #![forbid(unsafe_code)]
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+mod web;
 pub mod advancements;
 pub mod ambience;
 pub mod animate_tick;
