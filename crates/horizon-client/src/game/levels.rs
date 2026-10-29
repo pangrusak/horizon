@@ -12,7 +12,7 @@
 //! Overworld's level data: the game time, the day time and the weather, the
 //! game rules, the scoreboard, the maps and the entities waiting to arrive
 //! through a portal.
-
+use web_time::Instant;
 use super::{
     Dim, ExperienceOrb, FallingBlock, Game, ItemEntity, Mob, boats, commands,
     creaking::CreakingState, dragon, fireworks, lan::LanHost, lightning, machines, minecarts,
@@ -27,7 +27,7 @@ use horizon_world::level::{LevelEvent, Ticks};
 use std::{
     collections::HashMap,
     sync::Arc,
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 /// Server ticks a level other than the Overworld stays loaded with no player
