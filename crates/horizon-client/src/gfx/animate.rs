@@ -78,7 +78,7 @@ impl SpriteAnimator {
     /// `textures` are the sprite arrays, `split` layers each, `size` pixels
     /// wide; `animations` hold their frames at that size. `compute`: whether
     /// the device says it runs compute shaders writing storage textures.
-    pub fn new(
+    pub async fn new(
         device: &wgpu::Device,
         animations: &[SpriteAnimation],
         size: u32,
@@ -87,7 +87,11 @@ impl SpriteAnimator {
         split: u32,
         compute: bool,
     ) -> Self {
-        let pipeline = if compute { pipeline(device) } else { None };
+        let pipeline = if compute {
+            pipeline(device).await
+        } else {
+            None
+        };
         let limits = device.limits();
         let limit = if pipeline.is_some() {
             limits
@@ -367,13 +371,15 @@ impl SpriteAnimator {
 /// driver can list compute shaders among its extensions while wgpu writes
 /// the GLSL version of its core version, which has none (Mesa's
 /// `MESA_GL_VERSION_OVERRIDE`, older drivers).
-fn pipeline(device: &wgpu::Device) -> Option<wgpu::ComputePipeline> {
+async fn pipeline(device: &wgpu::Device) -> Option<wgpu::ComputePipeline> {
     let validation = device.push_error_scope(wgpu::ErrorFilter::Validation);
     let internal = device.push_error_scope(wgpu::ErrorFilter::Internal);
+
     let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
         label: Some("Animated sprites"),
         source: wgpu::ShaderSource::Wgsl(include_str!("animate.wgsl").into()),
     });
+
     let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
         label: Some("Animated sprites"),
         layout: None,
@@ -382,11 +388,16 @@ fn pipeline(device: &wgpu::Device) -> Option<wgpu::ComputePipeline> {
         compilation_options: Default::default(),
         cache: None,
     });
-    let internal = pollster::block_on(internal.pop());
-    match internal.or(pollster::block_on(validation.pop())) {
+
+    let internal = internal.pop().await;
+    let validation = validation.pop().await;
+
+    match internal.or(validation) {
         None => Some(pipeline),
-        Some(e) => {
-            log::warn!("Horizon renderer: animated sprites drawn on the CPU ({e})");
+        Some(error) => {
+            log::warn!(
+                "Horizon renderer: animated sprites drawn on the CPU ({error})"
+            );
             None
         }
     }
@@ -710,8 +721,15 @@ mod tests {
                 })
             })
             .collect();
-        let mut animator =
-            SpriteAnimator::new(&device, &animations, size, &mips, &textures, split, compute);
+            let mut animator = pollster::block_on(SpriteAnimator::new(
+                &device,
+                &animations,
+                size,
+                &mips,
+                &textures,
+                split,
+                compute,
+            ));
         let mut uploads = Uploads::new(&device);
         let mut writes = Vec::new();
         for tick in [0, 0, 1, 2, 3, 4, 7, 7, 12, 30] {

@@ -1487,15 +1487,16 @@ impl Renderer {
                 )
             })
             .collect();
-        let animations = animate::SpriteAnimator::new(
-            &device,
-            animations,
-            sprite_size,
-            sprite_mips,
-            &sprite_textures,
-            split,
-            animate::SpriteAnimator::compute(&adapter, &device),
-        );
+            let animations = animate::SpriteAnimator::new(
+                &device,
+                animations,
+                sprite_size,
+                sprite_mips,
+                &sprite_textures,
+                split,
+                animate::SpriteAnimator::compute(&adapter, &device),
+            )
+            .await;
         let sprite_unused = device
             .create_texture(&wgpu::TextureDescriptor {
                 label: Some("Block sprites (unused)"),
