@@ -36,9 +36,44 @@
     try {
       const { default: init } = await import("./pkg/horizon_client.js");
       await init();
+
+      status.textContent += "\nChecking WebGPU…";
+
+      if (!navigator.gpu) {
+        throw new Error(
+          "WebGPU is unavailable. Check browser support and hardware acceleration."
+        );
+      }
+
+      const adapter = await navigator.gpu.requestAdapter({
+        powerPreference: "high-performance",
+      });
+
+      if (!adapter) {
+        throw new Error("WebGPU could not find a usable GPU adapter.");
+      }
+
+      const device = await adapter.requestDevice();
+
+      const report = {
+        adapter: adapter.info?.description || "Description unavailable",
+        maxTextureDimension2D: device.limits.maxTextureDimension2D,
+        maxTextureArrayLayers: device.limits.maxTextureArrayLayers,
+        maxBindGroups: device.limits.maxBindGroups,
+        maxStorageBuffersPerShaderStage:
+          device.limits.maxStorageBuffersPerShaderStage,
+      };
+
+      console.table(report);
+      status.textContent +=
+        "\nWebGPU device created successfully.\n" +
+        JSON.stringify(report, null, 2) +
+        "\nHorizon renderer not started.";
+
+      device.destroy();
     } catch (error) {
       console.error(error);
-      status.textContent = `Horizon startup failed:\n${error}`;
+      status.textContent += `\nStartup check failed: ${error.message ?? error}`;
     }
   </script>
 </body>
