@@ -37,14 +37,16 @@
     const horizon = await import("./pkg/horizon_client.js");
     await horizon.default();
 
-    status.textContent += "\nChecking Rust/Wgpu device initialization…";
+    status.textContent += "\nPresenting a Rust/Wgpu test frame…";
+    await horizon.present_test_frame();
 
-    const report = await horizon.probe_gpu();
-    status.textContent += "\n" + report;
-    console.log(report);
+    status.textContent =
+      "Rust/Wgpu test frame submitted and presented.\n" +
+      "The canvas should be green.\n" +
+      "Horizon game renderer not started.";
   } catch (error) {
     console.error(error);
-    status.textContent += `\nGPU check failed: ${String(error)}`;
+    status.textContent += `\nCanvas test failed: ${String(error)}`;
   }
 </script>
 </body>
