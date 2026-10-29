@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const present_test_frame: () => any;
 export const probe_gpu: () => any;
 export const start: () => void;
 export const ring_core_0_17_14__bn_mul_mont: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
@@ -8,6 +9,7 @@ export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___js_s
 export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___wasm_bindgen_99b6d9e459273f30___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_99b6d9e459273f30___JsError___true_: (a: number, b: number, c: any) => [number, number];
 export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___wasm_bindgen_99b6d9e459273f30___sys__JsNullable_wgpu_b2f491b0e21f7f39___backend__webgpu__webgpu_sys__gen_GpuAdapter__GpuAdapter___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_99b6d9e459273f30___JsError___true_: (a: number, b: number, c: any) => [number, number];
 export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___wasm_bindgen_99b6d9e459273f30___sys__JsNullable_wgpu_b2f491b0e21f7f39___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_99b6d9e459273f30___JsError___true_: (a: number, b: number, c: any) => [number, number];
+export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___wasm_bindgen_99b6d9e459273f30___sys__Undefined__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_99b6d9e459273f30___JsError___true_: (a: number, b: number, c: any) => [number, number];
 export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___wgpu_b2f491b0e21f7f39___backend__webgpu__webgpu_sys__gen_GpuDevice__GpuDevice__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_99b6d9e459273f30___JsError___true_: (a: number, b: number, c: any) => [number, number];
 export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___wgpu_b2f491b0e21f7f39___backend__webgpu__webgpu_sys__gen_GpuDeviceLostInfo__GpuDeviceLostInfo______true_: (a: number, b: number, c: any) => void;
 export const wasm_bindgen_99b6d9e459273f30___convert__closures_____invoke___wgpu_b2f491b0e21f7f39___backend__webgpu__webgpu_sys__gen_GpuUncapturedErrorEvent__GpuUncapturedErrorEvent______true_: (a: number, b: number, c: any) => void;

@@ -33,20 +33,23 @@
 <script type="module">
   const status = document.getElementById("status");
 
+  window.addEventListener("error", (event) => {
+    status.textContent += `\nBrowser error: ${event.message}`;
+  });
+
+  window.addEventListener("unhandledrejection", (event) => {
+    console.error(event.reason);
+    status.textContent += `\nAsync error: ${String(event.reason)}`;
+  });
+
   try {
     const horizon = await import("./pkg/horizon_client.js");
     await horizon.default();
 
-    status.textContent += "\nPresenting a Rust/Wgpu test frame…";
-    await horizon.present_test_frame();
-
-    status.textContent =
-      "Rust/Wgpu test frame submitted and presented.\n" +
-      "The canvas should be green.\n" +
-      "Horizon game renderer not started.";
+    horizon.start_renderer();
   } catch (error) {
     console.error(error);
-    status.textContent += `\nCanvas test failed: ${String(error)}`;
+    status.textContent += `\nStartup failed: ${String(error)}`;
   }
 </script>
 </body>

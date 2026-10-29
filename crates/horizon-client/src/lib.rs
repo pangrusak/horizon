@@ -3,6 +3,8 @@
 #![forbid(unsafe_code)]
 #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
 mod web;
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+mod web_renderer;
 pub mod advancements;
 pub mod ambience;
 pub mod animate_tick;
