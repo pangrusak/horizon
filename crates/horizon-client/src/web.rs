@@ -3,6 +3,7 @@ use wasm_bindgen::JsCast;
 
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
+    console_error_panic_hook::set_once();
     let window = web_sys::window()
         .ok_or_else(|| JsValue::from_str("Horizon requires a browser window"))?;
 
