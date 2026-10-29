@@ -66,6 +66,7 @@ fn virtual_interface(name: &str) -> bool {
 /// This machine's addresses worth offering, best first: private IPv4 (the
 /// LAN), shared IPv4 (Tailscale's 100.64/10, CGNAT), other IPv4, one global
 /// IPv6. No link-local or unique-local; loopback on request.
+#[cfg(not(target_arch = "wasm32"))]
 pub fn interface_addresses(loopback: bool) -> Vec<IpAddr> {
     let mut found: Vec<(u8, IpAddr)> = Vec::new();
     for i in if_addrs::get_if_addrs().unwrap_or_default() {
@@ -111,6 +112,11 @@ pub fn interface_addresses(loopback: bool) -> Vec<IpAddr> {
         }
     }
     out
+}
+
+#[cfg(target_arch = "wasm32")]
+pub fn interface_addresses(_loopback: bool) -> Vec<IpAddr> {
+    Vec::new()
 }
 
 impl Reach {
