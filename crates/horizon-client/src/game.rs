@@ -13740,8 +13740,8 @@ impl ApplicationHandler for Game<'_> {
                         window.request_redraw();
                     }
                     // Yield between polls even when disk I/O is slow.
-                    event_loop.set_control_flow(ControlFlow::WaitUntil(
-                        Instant::now() + Duration::from_millis(4),
+                        event_loop.set_control_flow(ControlFlow::wait_duration(
+                        Duration::from_millis(4),
                     ));
                 }
                 Err(error) => {
