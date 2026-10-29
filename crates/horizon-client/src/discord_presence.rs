@@ -111,6 +111,7 @@ static THREAD: OnceLock<Thread> = OnceLock::new();
 
 /// Starts the presence thread, once: when the game starts, never for a dedicated server.
 /// `automated` runs (offscreen, benchmarks) only talk to a test's fake Discord.
+#[cfg(not(target_arch = "wasm32"))]
 pub fn start(enabled: bool, automated: bool) {
     let fake_discord = std::env::var_os(IPC_DIR_ENV).is_some();
     if THREAD.get().is_some()
@@ -132,6 +133,10 @@ pub fn start(enabled: bool, automated: bool) {
         Err(e) => log::warn!("Horizon: no Discord presence: {e}"),
     }
 }
+
+/// Desktop Discord Rich Presence is disabled in the browser port.
+#[cfg(target_arch = "wasm32")]
+pub fn start(_enabled: bool, _automated: bool) {}
 
 /// What the player does now; only a change wakes the thread. Free without [`start`].
 pub fn set(status: Status) {
@@ -435,6 +440,14 @@ fn open(path: &std::path::Path) -> io::Result<Box<dyn Pipe>> {
         .write(true)
         .open(path)?;
     Ok(Box::new(pipe))
+}
+
+#[cfg(target_arch = "wasm32")]
+fn open(_path: &std::path::Path) -> io::Result<Box<dyn Pipe>> {
+    Err(io::Error::new(
+        io::ErrorKind::Unsupported,
+        "Desktop Discord IPC is unavailable in the browser port",
+    ))
 }
 
 #[cfg(test)]
