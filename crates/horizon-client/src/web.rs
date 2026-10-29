@@ -59,9 +59,16 @@ async fn present_test_frame_inner() -> Result<(), String> {
         ..wgpu::InstanceDescriptor::new_without_display_handle()
     });
 
-    let surface = instance
-        .create_surface(wgpu::SurfaceTarget::Canvas(canvas))
-        .map_err(|error| error.to_string())?;
+    let frame = match surface.get_current_texture() {
+        wgpu::CurrentSurfaceTexture::Success(frame)
+        | wgpu::CurrentSurfaceTexture::Suboptimal(frame) => frame,
+
+        status => {
+            return Err(format!(
+                "Could not acquire the canvas frame: {status:?}"
+            ));
+        }
+    };
 
     let adapter = instance
         .request_adapter(&wgpu::RequestAdapterOptions {
