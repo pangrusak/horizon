@@ -27,7 +27,7 @@ use std::{
     io::Write,
     path::PathBuf,
     sync::{Arc, Mutex, OnceLock, mpsc},
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 
 mod status;
@@ -1499,3 +1499,5 @@ mod tests {
         }
     }
 }
+
+use web_time::Instant;

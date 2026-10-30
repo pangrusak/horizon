@@ -12,7 +12,7 @@ use horizon_client::Result;
 use serde_json::json;
 use std::{
     path::Path,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 
 impl Game<'_> {
@@ -125,3 +125,5 @@ impl Game<'_> {
         Ok(())
     }
 }
+
+use web_time::Instant;

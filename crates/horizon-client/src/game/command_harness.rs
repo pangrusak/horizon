@@ -12,7 +12,7 @@ use horizon_client::{Result, text::Text};
 use serde_json::{Value, json};
 use std::{
     path::Path,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 
 /// A message as `[text, style]` runs with adjacent equal styles merged; the
@@ -243,3 +243,5 @@ impl Game<'_> {
         Ok(())
     }
 }
+
+use web_time::Instant;

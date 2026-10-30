@@ -21,7 +21,7 @@ use serde_json::{Value, json};
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
     sync::mpsc::Sender,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 use winit::{
     application::ApplicationHandler,
@@ -2206,3 +2206,5 @@ mod tests {
         );
     }
 }
+
+use web_time::Instant;

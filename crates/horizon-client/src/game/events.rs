@@ -7,7 +7,7 @@ use serde_json::{Value, json};
 use std::{
     collections::{BTreeMap, VecDeque},
     sync::mpsc::Sender,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 
 pub(super) const HELP: &[&str] = &[
@@ -351,3 +351,5 @@ mod tests {
         assert!(parse_wait(&["soon"]).is_err());
     }
 }
+
+use web_time::Instant;

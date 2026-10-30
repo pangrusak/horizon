@@ -10,7 +10,7 @@ use horizon_client::{
     text::{self, Text},
 };
 use horizon_protocol::packets::play::{self, Clientbound as C};
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant as StdInstant};
 
 /// How often the progress is reported.
 const REPORT_EVERY: Duration = Duration::from_secs(5);
@@ -286,3 +286,5 @@ impl Game<'_> {
         }
     }
 }
+
+use web_time::Instant;

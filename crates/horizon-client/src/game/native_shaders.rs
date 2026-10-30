@@ -7,7 +7,7 @@
 use std::{
     hash::{Hash, Hasher},
     path::Path,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 
 use horizon_client::text::Text;
@@ -118,3 +118,5 @@ fn fingerprint(path: &Path) -> Option<u64> {
     walk(path, &mut hasher)?;
     Some(hasher.finish())
 }
+
+use web_time::Instant;

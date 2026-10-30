@@ -45,7 +45,7 @@ use horizon_world::{
 use std::{
     collections::{HashMap, VecDeque},
     sync::Arc,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 use winit::{event::MouseButton, keyboard::KeyCode};
 
@@ -6653,3 +6653,5 @@ mod tests {
         assert_eq!(Game::menu_slot_index("unknown", 0), None);
     }
 }
+
+use web_time::Instant;

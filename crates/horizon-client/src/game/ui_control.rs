@@ -11,7 +11,7 @@ use horizon_client::{
 use serde_json::{Value, json};
 use std::{
     sync::mpsc::Sender,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 use winit::{event::MouseButton, event_loop::ActiveEventLoop};
 
@@ -216,3 +216,5 @@ impl Game<'_> {
         }
     }
 }
+
+use web_time::Instant;

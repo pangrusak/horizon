@@ -6,7 +6,7 @@ use crate::game::Game;
 use serde_json::{Value, json};
 use std::{
     sync::atomic::Ordering,
-    time::{Duration, Instant},
+    time::{Duration, Instant as StdInstant},
 };
 
 /// The window the tick rate is measured over.
@@ -98,3 +98,5 @@ impl Game<'_> {
         })
     }
 }
+
+use web_time::Instant;
